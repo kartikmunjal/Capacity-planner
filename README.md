@@ -1,0 +1,64 @@
+# Network Capacity Deployment Optimizer
+
+This project frames network capacity planning as a research-style constrained optimization problem. It generates a synthetic 12-month regional WiFi offload forecast, solves for an optimal deployment schedule with Pyomo, compares scenario outcomes under demand shocks, and exposes the results through a Dash app.
+
+## Research framing
+
+The model is designed around the operational question:
+
+> Given a budget, a monthly supply cap, and service level commitments, where and when should network infrastructure be deployed?
+
+The formulation uses:
+
+- 5 regions across 12 months
+- seasonality, growth, and induced-demand elasticity in the forecast
+- monthly budget and supply constraints
+- SLA coverage floors by region and month
+- region priority weights in the objective
+
+## Repository layout
+
+- `config/constraints.yaml`: planning assumptions and regional parameters
+- `src/capacity_planner/data.py`: synthetic demand generator
+- `src/capacity_planner/optimize.py`: Pyomo model, solve routine, and sensitivity extraction
+- `src/capacity_planner/scenario.py`: scenario reruns and Pareto experiments
+- `src/capacity_planner/pipeline.py`: reproducible CLI pipeline
+- `src/capacity_planner/app.py`: interactive Dash app
+- `tests/test_pipeline.py`: smoke coverage for the core workflow
+
+## Quick start
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+pip install -e .[dev]
+python -m capacity_planner.pipeline
+python -m capacity_planner.app
+```
+
+The Dash app runs on `http://localhost:8050`.
+
+## Outputs
+
+Running the pipeline produces:
+
+- `data/demand_forecast.csv`
+- `outputs/optimal_plan.csv`
+- `outputs/sensitivity_report.csv`
+- `outputs/scenario_comparison.csv`
+- `outputs/pareto_curve.csv`
+- `outputs/run_summary.json`
+
+## Model notes
+
+- Deployment units are continuous planning units to preserve dual values and shadow prices.
+- Elasticity is modeled as demand lift that offsets a portion of newly added effective capacity.
+- SLA shortfall is allowed but heavily penalized so infeasible cases can still be compared under stress scenarios.
+
+## Docker
+
+```bash
+docker build -t capacity-planner .
+docker run --rm -p 8050:8050 capacity-planner
+```
+

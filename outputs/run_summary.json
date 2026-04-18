@@ -1,0 +1,67 @@
+{
+  "base_run": {
+    "solver_status": "ok",
+    "termination_condition": "optimal",
+    "objective_value": 6152319.9097,
+    "total_spend": 1347506.89,
+    "total_demand": 182249.7,
+    "coverage_pct": 0.9266,
+    "sla_achievement_rate": 0.8833,
+    "binding_constraints": 92,
+    "solve_time_seconds": 0.0
+  },
+  "scenario_summary": [
+    {
+      "name": "base",
+      "shock_multiplier": 1.0,
+      "solver_status": "ok",
+      "termination_condition": "optimal",
+      "objective_value": 6152319.9097,
+      "total_spend": 1347506.89,
+      "total_demand": 182249.7,
+      "coverage_pct": 0.9266,
+      "sla_achievement_rate": 0.8833,
+      "binding_constraints": 92,
+      "solve_time_seconds": 0.0,
+      "total_deploy_units": 214.8727,
+      "plan_delta_vs_base_units": 0.0
+    },
+    {
+      "name": "shock_up_20",
+      "shock_multiplier": 1.2,
+      "solver_status": "ok",
+      "termination_condition": "optimal",
+      "objective_value": 9482418.1833,
+      "total_spend": 1617007.85,
+      "total_demand": 218699.64,
+      "coverage_pct": 0.9077,
+      "sla_achievement_rate": 0.8667,
+      "binding_constraints": 94,
+      "solve_time_seconds": 0.0,
+      "total_deploy_units": 257.8471,
+      "plan_delta_vs_base_units": 42.9744
+    },
+    {
+      "name": "shock_down_20",
+      "shock_multiplier": 0.8,
+      "solver_status": "ok",
+      "termination_condition": "optimal",
+      "objective_value": 3157048.1946,
+      "total_spend": 1078005.95,
+      "total_demand": 145799.75,
+      "coverage_pct": 0.9521,
+      "sla_achievement_rate": 0.95,
+      "binding_constraints": 86,
+      "solve_time_seconds": 0.0,
+      "total_deploy_units": 171.8983,
+      "plan_delta_vs_base_units": -42.9744
+    }
+  ],
+  "generated_files": [
+    "/Users/kartikmunjal/Downloads/abc/Capacity-planner/data/demand_forecast.csv",
+    "/Users/kartikmunjal/Downloads/abc/Capacity-planner/outputs/optimal_plan.csv",
+    "/Users/kartikmunjal/Downloads/abc/Capacity-planner/outputs/sensitivity_report.csv",
+    "/Users/kartikmunjal/Downloads/abc/Capacity-planner/outputs/scenario_comparison.csv",
+    "/Users/kartikmunjal/Downloads/abc/Capacity-planner/outputs/pareto_curve.csv"
+  ]
+}
