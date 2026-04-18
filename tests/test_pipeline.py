@@ -1,7 +1,10 @@
+import pandas as pd
+
 from pathlib import Path
 
 from capacity_planner.config import load_config
 from capacity_planner.data import DemandScenario, build_demand_forecast
+from capacity_planner.linked_inputs import apply_linked_asset_overrides
 from capacity_planner.optimize import solve_capacity_plan
 from capacity_planner.pipeline import run_pipeline
 
@@ -49,3 +52,24 @@ def test_pipeline_writes_new_outputs(tmp_path: Path):
     }
     assert expected.issubset({path.name for path in tmp_path.iterdir()})
     assert summary["base_run"]["termination_condition"] == "optimal"
+
+
+def test_linked_asset_overrides_apply(tmp_path: Path):
+    linked_path = tmp_path / "capacity_planner_inputs.csv"
+    pd.DataFrame(
+        [
+            {
+                "region": "Pacific",
+                "planning_baseline_units": 21,
+                "recommended_unit_cost": 7777.0,
+                "priority_multiplier": 1.2,
+                "data_confidence_score": 0.91,
+                "unmatched_ratio": 0.08,
+            }
+        ]
+    ).to_csv(linked_path, index=False)
+    config, metadata = apply_linked_asset_overrides(load_config(), linked_path)
+    assert metadata["linked_asset_input_used"] is True
+    assert config["regions"]["Pacific"]["baseline_units"] == 21
+    assert config["regions"]["Pacific"]["unit_cost"] == 7777.0
+    assert config["regions"]["Pacific"]["priority"] > load_config()["regions"]["Pacific"]["priority"]

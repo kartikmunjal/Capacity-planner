@@ -55,6 +55,18 @@ Running the pipeline produces:
 - `outputs/pareto_curve.csv`
 - `outputs/run_summary.json`
 
+## Linked Input From Project 2
+
+If the sibling repository `../Network-Asset-Reconciliation` has produced `outputs/capacity_planner_inputs.csv`, this project auto-ingests it during pipeline runs and in the Dash app.
+
+The linked export overrides:
+
+- `baseline_units` by region
+- `unit_cost` by region
+- `priority` via a reconciliation-derived multiplier
+
+This turns Project 1 from a fully synthetic planning model into one that can start from a reconciled regional asset baseline.
+
 ## Model notes
 
 - Deployment choices are integer batches, while shadow prices are reported from an LP relaxation for diagnostics.

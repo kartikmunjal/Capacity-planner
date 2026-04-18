@@ -5,12 +5,14 @@ from pathlib import Path
 
 from .config import DATA_DIR, OUTPUT_DIR, load_config
 from .data import DemandScenario, build_demand_forecast, write_demand_forecast
+from .linked_inputs import apply_linked_asset_overrides
 from .optimize import solve_capacity_plan
 from .scenario import build_pareto_curve, run_scenarios
 
 
-def run_pipeline(output_dir: Path | None = None) -> dict:
-    config = load_config()
+def run_pipeline(output_dir: Path | None = None, linked_asset_input_path: Path | None = None) -> dict:
+    base_config = load_config()
+    config, linkage_metadata = apply_linked_asset_overrides(base_config, linked_asset_input_path)
     output_root = output_dir or OUTPUT_DIR
     output_root.mkdir(parents=True, exist_ok=True)
     DATA_DIR.mkdir(parents=True, exist_ok=True)
@@ -33,6 +35,7 @@ def run_pipeline(output_dir: Path | None = None) -> dict:
     summary = {
         "base_run": artifacts.metrics,
         "scenario_summary": scenario_summary_df.to_dict(orient="records"),
+        "linked_asset_input": linkage_metadata,
         "generated_files": [
             str(DATA_DIR / "demand_forecast.csv"),
             str(output_root / "optimal_plan.csv"),

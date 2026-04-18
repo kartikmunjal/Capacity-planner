@@ -8,6 +8,7 @@ from dash import Input, Output, dash_table, dcc, html
 
 from .config import OUTPUT_DIR, load_config
 from .data import DemandScenario, build_demand_forecast
+from .linked_inputs import apply_linked_asset_overrides
 from .optimize import solve_capacity_plan
 from .pipeline import run_pipeline
 
@@ -25,7 +26,7 @@ def _ensure_outputs() -> None:
 
 
 def _run_plan(budget_cap: float, supply_limit: float, scenario_name: str, shock_percent: float):
-    config = load_config()
+    config, _ = apply_linked_asset_overrides(load_config())
     if scenario_name == "custom":
         shock_multiplier = 1 + (shock_percent / 100.0)
     else:
@@ -52,7 +53,7 @@ def _metric_card(title: str, value: str, subtitle: str) -> html.Div:
 
 
 _ensure_outputs()
-config = load_config()
+config, linked_metadata = apply_linked_asset_overrides(load_config())
 default_budget = config["planning"]["baseline_budget"]
 default_supply = config["planning"]["baseline_supply_limit"]
 
@@ -75,6 +76,10 @@ app.layout = html.Div(
                 html.P(
                     "Research-style planning lab for monthly network deployment under budget, supply, elasticity, and SLA pressure.",
                     style={"maxWidth": "900px", "fontSize": "18px", "lineHeight": "1.6", "color": "#334155"},
+                ),
+                html.P(
+                    f"Linked asset baseline: {'enabled' if linked_metadata['linked_asset_input_used'] else 'not found'}",
+                    style={"fontSize": "14px", "color": "#9a3412"},
                 ),
             ],
             style={"marginBottom": "26px"},
