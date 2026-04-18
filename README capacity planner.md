@@ -23,6 +23,7 @@ The formulation uses:
 ## Repository layout
 
 - `config/constraints.yaml`: planning assumptions and regional parameters
+- `modeling_assumptions.md`: explicit formulation and operating assumptions
 - `src/capacity_planner/data.py`: synthetic demand generator
 - `src/capacity_planner/optimize.py`: Pyomo model, solve routine, and sensitivity extraction
 - `src/capacity_planner/scenario.py`: scenario reruns and Pareto experiments
@@ -88,6 +89,8 @@ The linked export overrides:
 - `priority` via a reconciliation-derived multiplier
 
 This turns Project 1 from a fully synthetic planning model into one that can start from a reconciled regional asset baseline.
+
+The core formulation assumptions are documented in `modeling_assumptions.md`.
 
 ## Model notes
 
