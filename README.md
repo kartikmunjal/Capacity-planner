@@ -12,7 +12,11 @@ The formulation uses:
 
 - 5 regions across 12 months
 - seasonality, growth, and induced-demand elasticity in the forecast
+- baseline installed capacity by region
 - monthly budget and supply constraints
+- one-month deployment lead time
+- batched integer deployment decisions
+- capex plus operating-cost tracking
 - SLA coverage floors by region and month
 - region priority weights in the objective
 
@@ -31,9 +35,9 @@ The formulation uses:
 ```bash
 python -m venv .venv
 source .venv/bin/activate
-pip install -e .[dev]
-python -m capacity_planner.pipeline
-python -m capacity_planner.app
+pip install .[dev]
+capacity-planner-pipeline
+capacity-planner-app
 ```
 
 The Dash app runs on `http://localhost:8050`.
@@ -45,15 +49,30 @@ Running the pipeline produces:
 - `data/demand_forecast.csv`
 - `outputs/optimal_plan.csv`
 - `outputs/sensitivity_report.csv`
+- `outputs/constraint_diagnostics.csv`
 - `outputs/scenario_comparison.csv`
+- `outputs/scenario_summary.csv`
 - `outputs/pareto_curve.csv`
 - `outputs/run_summary.json`
 
 ## Model notes
 
-- Deployment units are continuous planning units to preserve dual values and shadow prices.
+- Deployment choices are integer batches, while shadow prices are reported from an LP relaxation for diagnostics.
 - Elasticity is modeled as demand lift that offsets a portion of newly added effective capacity.
+- Baseline regional capacity prevents the model from pretending the network starts from zero.
+- A one-month activation lag models procurement and deployment lead time.
 - SLA shortfall is allowed but heavily penalized so infeasible cases can still be compared under stress scenarios.
+
+## Dash surface
+
+The second-pass app adds:
+
+- scenario presets plus a custom demand shock mode
+- heatmap of deployment units by region and month
+- coverage vs SLA chart
+- budget and supply utilization chart
+- scenario delta chart against the base plan
+- binding-constraint and monthly-diagnostics tables
 
 ## Docker
 
@@ -61,4 +80,3 @@ Running the pipeline produces:
 docker build -t capacity-planner .
 docker run --rm -p 8050:8050 capacity-planner
 ```
-

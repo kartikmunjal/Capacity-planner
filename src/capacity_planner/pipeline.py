@@ -21,21 +21,25 @@ def run_pipeline(output_dir: Path | None = None) -> dict:
     artifacts = solve_capacity_plan(demand_df, config)
     artifacts.plan.to_csv(output_root / "optimal_plan.csv", index=False)
     artifacts.sensitivity.to_csv(output_root / "sensitivity_report.csv", index=False)
+    artifacts.diagnostics.to_csv(output_root / "constraint_diagnostics.csv", index=False)
 
-    scenario_comparison_df, scenario_summary = run_scenarios(config)
+    scenario_comparison_df, scenario_summary_df = run_scenarios(config)
     scenario_comparison_df.to_csv(output_root / "scenario_comparison.csv", index=False)
+    scenario_summary_df.to_csv(output_root / "scenario_summary.csv", index=False)
 
     pareto_df = build_pareto_curve(config)
     pareto_df.to_csv(output_root / "pareto_curve.csv", index=False)
 
     summary = {
         "base_run": artifacts.metrics,
-        "scenario_summary": scenario_summary,
+        "scenario_summary": scenario_summary_df.to_dict(orient="records"),
         "generated_files": [
             str(DATA_DIR / "demand_forecast.csv"),
             str(output_root / "optimal_plan.csv"),
             str(output_root / "sensitivity_report.csv"),
+            str(output_root / "constraint_diagnostics.csv"),
             str(output_root / "scenario_comparison.csv"),
+            str(output_root / "scenario_summary.csv"),
             str(output_root / "pareto_curve.csv"),
         ],
     }
@@ -43,7 +47,10 @@ def run_pipeline(output_dir: Path | None = None) -> dict:
     return summary
 
 
-if __name__ == "__main__":
+def main() -> None:
     results = run_pipeline()
     print(json.dumps(results, indent=2))
 
+
+if __name__ == "__main__":
+    main()

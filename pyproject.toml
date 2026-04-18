@@ -18,6 +18,10 @@ dependencies = [
   "highspy>=1.8,<2.0",
 ]
 
+[project.scripts]
+capacity-planner-pipeline = "capacity_planner.pipeline:main"
+capacity-planner-app = "capacity_planner.app:main"
+
 [project.optional-dependencies]
 dev = [
   "pytest>=8.3,<9.0",
